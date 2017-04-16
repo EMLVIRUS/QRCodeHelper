@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="QRCode_Helper.App"
+    x:Class="QRCodeHelper.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:QRCode_Helper"
+    xmlns:local="using:QRCodeHelper"
     RequestedTheme="Light">
 
 </Application>
