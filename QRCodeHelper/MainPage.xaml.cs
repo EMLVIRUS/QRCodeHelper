@@ -85,7 +85,11 @@ namespace QRCodeHelper
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
 
-            FileSavePicker picker = new FileSavePicker();
+            FileSavePicker picker = new FileSavePicker()
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                SuggestedFileName = $"QRCode-Helper_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.png"
+            };
             picker.FileTypeChoices.Add("PNG File", new List<string>() { ".png" });
             picker.FileTypeChoices.Add("JPG File", new List<string>() { ".jpg", ".jpeg" });
             StorageFile savefile = await picker.PickSaveFileAsync();
@@ -139,7 +143,7 @@ namespace QRCodeHelper
         {
             FileOpenPicker picker = new FileOpenPicker()
             {
-                ViewMode = PickerViewMode.List,
+                ViewMode = PickerViewMode.Thumbnail,
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary
             };
             picker.FileTypeFilter.Add(".jpg");
