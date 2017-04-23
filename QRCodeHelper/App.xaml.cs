@@ -29,7 +29,7 @@ namespace QRCodeHelper
         public App()
         {
             this.InitializeComponent();
-            this.Suspending += OnSuspending;
+            // this.Suspending += OnSuspending;
         }
 
         /// <summary>
@@ -50,10 +50,10 @@ namespace QRCodeHelper
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: 从之前挂起的应用程序加载状态
-                }
+                // if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                // {
+                //     //TODO: 从之前挂起的应用程序加载状态
+                // }
 
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
@@ -90,11 +90,11 @@ namespace QRCodeHelper
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
-        {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: 保存应用程序状态并停止任何后台活动
-            deferral.Complete();
-        }
+        // private void OnSuspending(object sender, SuspendingEventArgs e)
+        // {
+        //     var deferral = e.SuspendingOperation.GetDeferral();
+        //     //TODO: 保存应用程序状态并停止任何后台活动
+        //     deferral.Complete();
+        // }
     }
 }

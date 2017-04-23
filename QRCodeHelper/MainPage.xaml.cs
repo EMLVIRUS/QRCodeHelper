@@ -38,9 +38,10 @@ namespace QRCodeHelper
     public sealed partial class MainPage : Page
     {
 
-        const ushort DEFAULT_SIZE = 320;
+        private const ushort DEFAULT_SIZE = 320;
 
-        private BarcodeWriter qrWriter = new BarcodeWriter() {
+        private BarcodeWriter qrWriter = new BarcodeWriter()
+        {
             Format = BarcodeFormat.QR_CODE,
             Options = new QrCodeEncodingOptions
             {
@@ -49,7 +50,7 @@ namespace QRCodeHelper
                 CharacterSet = "utf-8"
             }
         };
-        private BarcodeReader qrReader =  new BarcodeReader()
+        private BarcodeReader qrReader = new BarcodeReader()
         {
             Options = new DecodingOptions
             {
@@ -99,7 +100,7 @@ namespace QRCodeHelper
                 switch (savefile.FileType)
                 {
                     case ".png":
-                        encoderId = BitmapEncoder.PngEncoderId;
+                        // encoderId = BitmapEncoder.PngEncoderId;
                         break;
                     case ".jpg":
                     case ".jpeg":
@@ -111,7 +112,14 @@ namespace QRCodeHelper
 
                 byte[] pixels = new byte[pixelStream.Length];
                 await pixelStream.ReadAsync(pixels, 0, pixels.Length);
-                encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore, (uint)qrBitmap.PixelWidth, (uint)qrBitmap.PixelHeight, 96.0, 96.0, pixels);
+                encoder.SetPixelData(
+                    BitmapPixelFormat.Bgra8, 
+                    BitmapAlphaMode.Ignore,
+                    (uint)qrBitmap.PixelWidth,
+                    (uint)qrBitmap.PixelHeight,
+                    96.0,
+                    96.0,
+                    pixels);
                 await encoder.FlushAsync();
             }
         }
@@ -169,7 +177,7 @@ namespace QRCodeHelper
                 }
                 else
                 {
-                    var dialog = new MessageDialog("Unable to find QRCode.");
+                    var dialog = new MessageDialog("Unable to detect QRCode.");
                     await dialog.ShowAsync();
                 }
             }
