@@ -18,7 +18,17 @@
         </Grid.ColumnDefinitions>
 
         <Image x:Name="QRCodeImage" Visibility="Visible" Stretch="None" />
-        <TextBox x:Name="QRTextBox" TextWrapping="Wrap" Text="QRCode Helper" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextChanged="QRTextBox_TextChanged" Grid.Column="1" HorizontalContentAlignment="Stretch" Margin="30,30,30,30" VerticalContentAlignment="Stretch" />
+        <TextBox x:Name="QRTextBox" 
+                 TextWrapping="Wrap" 
+                 Text="QRCode Helper"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 AcceptsReturn="True" 
+                 TextChanged="QRTextBox_TextChanged"
+                 Grid.Column="1" 
+                 HorizontalContentAlignment="Stretch"
+                 SelectionLength="13"
+                 Margin="30,30,30,30" 
+                 VerticalContentAlignment="Stretch" />
 
         <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30" Grid.ColumnSpan="2">
             <TextBox x:Name="SizeTextBox" Text="320" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Right" InputScope="Number" TextChanged="SizeTextBox_TextChanged" IsSpellCheckEnabled="False" MaxLength="4" Header="Size" MinWidth="0" MinHeight="0" />
