@@ -37,8 +37,14 @@ namespace QRCodeHelper
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
+        // conveniently convert to uint and int
         private const ushort DEFAULT_SIZE = 320;
+
+        // delay QRCode Rendering
+        private DispatcherTimer updateQRCodeImageTimer = new DispatcherTimer()
+        {
+            Interval = TimeSpan.FromMilliseconds(300)
+        };
 
         private BarcodeWriter qrWriter = new BarcodeWriter()
         {
@@ -50,6 +56,7 @@ namespace QRCodeHelper
                 CharacterSet = "utf-8"
             }
         };
+
         private BarcodeReader qrReader = new BarcodeReader()
         {
             Options = new DecodingOptions
@@ -59,21 +66,19 @@ namespace QRCodeHelper
                 CharacterSet = "utf-8"
             }
         };
+
         private WriteableBitmap qrBitmap;
 
         public MainPage()
         {
             this.InitializeComponent();
             this.UpdateQRCodeImage();
-        }
-
-        private void QRTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateQRCodeImage();
+            this.updateQRCodeImageTimer.Tick += UpdateQRCodeImageTimer_Tick;
         }
 
         private void UpdateQRCodeImage()
         {
+            updateQRCodeImageTimer.Stop();
             if (!String.IsNullOrEmpty(QRTextBox.Text))
             {
                 qrBitmap = qrWriter.Write(QRTextBox.Text);
@@ -82,8 +87,22 @@ namespace QRCodeHelper
             }
         }
 
+        private void DelayedUpdateQRCodeImage()
+        {
+            updateQRCodeImageTimer.Start();
+        }
+
+        private void UpdateQRCodeImageTimer_Tick(object sender, object e)
+        {
+            UpdateQRCodeImage();
+        }
+
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (updateQRCodeImageTimer.IsEnabled)
+            {
+                UpdateQRCodeImage();
+            }
 
             FileSavePicker picker = new FileSavePicker()
             {
@@ -128,6 +147,11 @@ namespace QRCodeHelper
             }
         }
 
+        private void QRTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DelayedUpdateQRCodeImage();
+        }
+
         private void SizeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!ushort.TryParse(SizeTextBox.Text, out ushort size))
@@ -136,7 +160,7 @@ namespace QRCodeHelper
             }
             qrWriter.Options.Width = size;
             qrWriter.Options.Height = size;
-            UpdateQRCodeImage();
+            DelayedUpdateQRCodeImage();
         }
 
         private async void LoadButton_Click(object sender, RoutedEventArgs e)
