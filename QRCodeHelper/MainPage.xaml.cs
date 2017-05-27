@@ -1,31 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Windows.System;
 using ZXing;
 using ZXing.Common;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.Storage.Pickers;
-using Windows.Graphics.Imaging;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
 using ZXing.QrCode;
-using System.Text;
 
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
@@ -136,7 +126,7 @@ namespace QRCodeHelper
                 byte[] pixels = new byte[pixelStream.Length];
                 await pixelStream.ReadAsync(pixels, 0, pixels.Length);
                 encoder.SetPixelData(
-                    BitmapPixelFormat.Bgra8, 
+                    BitmapPixelFormat.Bgra8,
                     BitmapAlphaMode.Ignore,
                     (uint)qrBitmap.PixelWidth,
                     (uint)qrBitmap.PixelHeight,
@@ -170,19 +160,35 @@ namespace QRCodeHelper
                 ViewMode = PickerViewMode.Thumbnail,
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary
             };
+            picker.FileTypeFilter.Add(".png");
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".jpeg");
-            picker.FileTypeFilter.Add(".png");
+            picker.FileTypeFilter.Add(".txt");
             var file = await picker.PickSingleFileAsync();
-            await LoadImageAndDecode(file);
+            if (file != null)
+            {
+                await LoadFile(file);
+            }
+        }
+
+        private async Task LoadFile(IStorageFile file)
+        {
+            switch (file.FileType)
+            {
+                case ".png":
+                case ".jpg":
+                case ".jpeg":
+                    await LoadImageAndDecode(file);
+                    break;
+                case ".txt":
+                    QRTextBox.Text = await FileIO.ReadTextAsync(file, Windows.Storage.Streams.UnicodeEncoding.Utf8);
+                    UpdateQRCodeImage();
+                    break;
+            }
         }
 
         private async Task LoadImageAndDecode(IStorageFile file)
         {
-            if (file == null)
-            {
-                return;
-            }
             using (var stream = await file.OpenReadAsync())
             {
                 var bitmapImage = new BitmapImage();
@@ -205,7 +211,7 @@ namespace QRCodeHelper
                 }
                 else
                 {
-                    var dialog = new MessageDialog("Unable to detect QRCode.");
+                    var dialog = new MessageDialog("No QRCode detected");
                     await dialog.ShowAsync();
                 }
             }
@@ -218,7 +224,7 @@ namespace QRCodeHelper
                 var items = await e.DataView.GetStorageItemsAsync();
                 if (items[0] is IStorageFile file)
                 {
-                    await LoadImageAndDecode(file);
+                    await LoadFile(file);
                 }
             }
         }
